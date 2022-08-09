@@ -3,10 +3,10 @@ const consonent = 'bcdfghjklmnpqrstvwxyz';
 const vowel = 'aeiou';
 
 const person = {
-    name: 'Marie',
-    surname: 'Curie',
+    name: 'Brendan',
+    surname: 'Eich',
     gender: 'M',
-    dob: '1/1/1900'
+    dob: '1/12/1961'
 }
 
 function fiscalCode(person) {
@@ -105,11 +105,55 @@ function fiscalCode(person) {
     tempArray.push(secondThreeLetters);
 
     // the last part (2 numbers, 1 letter and 2 numbers)
+    // generate 2 numbers according to the last 2 digits of the dob year
+    const lastTwoDigitsOfYear = person.dob.slice((person.dob.length - 2), (person.dob.length));
+    tempArray.push(lastTwoDigitsOfYear);
 
+    // generate a letter according to the month
+    let monthScannerArray = [];
+    let monthScannerVar = true;
+    for (let i = 0; i < person.dob.length; i++) {
+        if (person.dob[i] === '/') {
+            if (monthScannerVar === true) {
+                monthScannerVar = false;
+            }
+            else if (monthScannerVar === false) {
+                monthScannerVar = true;
+            }
+            continue;
+        }
+        if (monthScannerVar === false) {
+            monthScannerArray.push(person.dob[i]);
+        }
+    }
+    let monthNumber = monthScannerArray.join('');
+    monthNumber = Number(monthNumber);
+    const monthValue = months[monthNumber];
+    tempArray.push(monthValue);
 
+    // generate 2 numbers from the gender
+    let dayOfBirth = '';
+    for (let i = 0; i < person.dob.length; i++) {
+        if (person.dob[i] === '/') {
+            break;
+        }
+        dayOfBirth += person.dob[i];
+    }
+    dayOfBirth = Number(dayOfBirth);
+    if (person.gender === 'M') {
+        if (dayOfBirth < 10) {
+            dayOfBirth = '0' + dayOfBirth;
+        }
+    }
+    else if (person.gender === 'F') {
+        dayOfBirth += 40;
+    }
+    tempArray.push(dayOfBirth);
 
+    // join all the things together
+    const finalCode = tempArray.join('');
 
-    console.log(nameVowelArray, nameConsonentArray, tempArray);
+    return finalCode;
 }
 
-fiscalCode(person);
+console.log(fiscalCode(person));
